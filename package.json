@@ -42,5 +42,8 @@
     "react-toggle-display": "^2.2.0",
     "shuffle-array": "^1.0.1",
     "watchify": "^3.9.0"
+  },
+  "engines": {
+    "node": "6.9.0"
   }
 }
