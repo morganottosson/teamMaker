@@ -1,0 +1,5 @@
+applications:
+- name: iotpdemo
+  memory: 128M
+  domain: eu-gb.mybluemix.net
+  disk_quota: 2048M
