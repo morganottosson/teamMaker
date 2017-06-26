@@ -14,27 +14,21 @@ const test = {
 }
 
 const backgroundStyle = {
-    "backgroundColor": "white",
     "position": "absolute",
-    "width": "25%",
-    "height": "25%",
+    "width": "50%",
+    "height": "50%",
     "zindex":1,
 }
 
 const arrayStyle = {
-   "backgroundColor": "#C1D4F1",
    "margin": "auto",
-   "width": "95%",
-   "border": "1px solid black",
-   "padding": "5px",
+   "width": "100%",
+
 
 }
 
 const objectStyle = {  
     "display": "flex",
-    "margin": "2px",
-    "padding": "2px",
-    "border": "1px solid black",
     "width": "99%",
     "color": "black",
     "height": "100%",
@@ -49,21 +43,62 @@ export default class RFSObjectDiv extends Component {
         collapse: false,
         players: [],
         teamOne: [],
-        teamTwo: []
-    }
+        teamTwo: [],
+        value: ''
+    },
+    this.teamOneWon = this.teamOneWon.bind(this);
+    this.delete = this.delete.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.savePlayer = this.savePlayer.bind(this);
   }
+
+  handleChange(event) {
+    this.setState({value: event.target.value});
+    console.log(this.state.value)
+
+  }
+
+  delete(player) {
+    return fetch (`/deletePlayer?input=${player}`)
+    .then(response =>
+      response.json()
+    )
+    .then(response => {
+      console.log("this is players after delete")
+      console.log(this.state.players)
+
+      this.fetchPlayers();
+    })
+  }
+
+  savePlayer() {
+    let value = this.state.value
+    console.log("savePlayer")
+    return fetch(`/savePlayer?input=${value}`)
+    .then(response =>
+      response.json())
+    .then( response => {
+      this.fetchPlayers();
+    })
+  }
+
+  teamOneWon() {
+    let winner = 1;
+
+    return fetch(`/teamOneWon?input=${winner}`)
+    .then(response => {
+      this.fetchPlayers();
+    })
+  }
+
 
   fetchPlayers() {
     fetch(`/players`)
     .then(response => response.json())
     .then(response => {
-      console.log(response)
       this.state.players = response[0]
-      console.log(this.state.players)
       this.state.teamOne = response[1]
-      console.log(this.state.teamOne)
       this.state.teamTwo = response[2]
-      console.log(this.state.teamTwo)
       this.forceUpdate();
     })
   }
@@ -79,19 +114,20 @@ export default class RFSObjectDiv extends Component {
         <div style = {test}>
           <div className="players" style={arrayStyle}>{this.state.teamOne.map((player, i) => {
               return <div style = {test}>
-              <div className='player' key={i} style={objectStyle}>
-                  <div style = {{"border": "1px solid black", "backgroundColor": "white", "padding": "5px", "marginLeft": "1%", "width":"100%", "height":"100%"}}>
+              <div className='player' key={i} >
+                  <div style = {{"border": "1px solid black", "backgroundColor": "white", "padding": "5px", "width":"95%", "height":"100%"}}>
                   {player.player}
                   </div>
               </div>
               </div>
           })}
+          <button onClick={() => { this.teamOneWon()}}> Vi vann </button>
           </div>
           Lag 2
           <div className="players" style={arrayStyle}>{this.state.teamTwo.map((player, i) => {
               return <div style = {test}>
-              <div className='player' key={i} style={objectStyle}>
-                  <div style = {{"border": "1px solid black", "backgroundColor": "white", "padding": "5px", "marginLeft": "1%", "width":"100%", "height":"100%"}}>
+              <div className='player' key={i}>
+                  <div style = {{"border": "1px solid black", "backgroundColor": "white", "padding": "5px", "width":"95%", "height":"100%"}}>
                   {player.player}
                   </div>
               </div>
@@ -100,16 +136,31 @@ export default class RFSObjectDiv extends Component {
           </div>
         </div>
         Spelare
+        <div>
+          <input
+            type="text"
+            value={this.state.value} 
+            onChange={this.handleChange}
+            placeholder="Fyll i namn"
+          />
+        </div>
+        <button
+          onClick={this.savePlayer}>
+        Spara spelare
+        </button>
         <div className="players" style={arrayStyle}>{this.state.players.map((player, i) => {
             return <div style = {test}>
-            <div className='player' key={i} style={objectStyle}>
-                <div style = {{"border": "1px solid black", "backgroundColor": "white", "padding": "5px", "marginLeft": "1%", "width":"100%", "height":"100%"}}>
-                {player.player}
-                </div>
-                <div style = {{"border": "1px solid black", "backgroundColor": "white", "padding": "5px", "marginLeft": "1%", "width":"100%", "height":"100%"}}>
-                {player.rating}
-                </div>
-            </div>
+              <div className='player' key={player.id} style={objectStyle}>
+                  <div style = {{"border": "1px solid black", "backgroundColor": "white", "padding": "5px", "marginLeft": "1%", "width":"100%", "height":"100%"}}>
+                  {player.player}
+                  </div>
+                  <div style = {{"border": "1px solid black", "backgroundColor": "white", "padding": "5px", "marginLeft": "1%", "width":"100%", "height":"100%"}}>
+                  {player.rating}
+                  </div>
+                  <div>
+                    <button onClick={() => { this.delete(player.player)}}> X </button>
+                  </div>
+              </div>
             </div>
         })}
         </div>
