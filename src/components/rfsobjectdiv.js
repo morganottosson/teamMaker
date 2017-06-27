@@ -15,9 +15,10 @@ const test = {
 
 const backgroundStyle = {
     "position": "absolute",
-    "width": "50%",
-    "height": "50%",
+    "width": "100%",
+    "height": "100%",
     "zindex":1,
+    
 }
 
 const arrayStyle = {
@@ -83,11 +84,15 @@ export default class RFSObjectDiv extends Component {
   }
 
   teamOneWon() {
-    let winner = 1;
-
-    return fetch(`/teamOneWon?input=${winner}`)
+    let teamOne = 1
+    console.log(teamOne)
+    return fetch(`/players?input=${teamOne}`)
+    .then(response => response.json())
     .then(response => {
-      this.fetchPlayers();
+      this.state.players = response[0]
+      this.state.teamOne = response[1]
+      this.state.teamTwo = response[2]
+      this.forceUpdate();
     })
   }
 
@@ -110,25 +115,31 @@ export default class RFSObjectDiv extends Component {
   render() {
     return (
       <div style={backgroundStyle}>
+        <div style = {{"color": "white"}}>
         Lag 1
+        </div>
         <div style = {test}>
           <div className="players" style={arrayStyle}>{this.state.teamOne.map((player, i) => {
               return <div style = {test}>
               <div className='player' key={i} >
                   <div style = {{"border": "1px solid black", "backgroundColor": "white", "padding": "5px", "width":"95%", "height":"100%"}}>
-                  {player.player}
+                  {player.player} - 
+                  {player.rating}
                   </div>
               </div>
               </div>
           })}
           <button onClick={() => { this.teamOneWon()}}> Vi vann </button>
           </div>
-          Lag 2
+        <div style = {{"color": "white"}}>
+        Lag 2
+        </div>
           <div className="players" style={arrayStyle}>{this.state.teamTwo.map((player, i) => {
               return <div style = {test}>
               <div className='player' key={i}>
                   <div style = {{"border": "1px solid black", "backgroundColor": "white", "padding": "5px", "width":"95%", "height":"100%"}}>
-                  {player.player}
+                  {player.player} - 
+                  {player.rating}
                   </div>
               </div>
               </div>
@@ -150,7 +161,7 @@ export default class RFSObjectDiv extends Component {
         </button>
         <div className="players" style={arrayStyle}>{this.state.players.map((player, i) => {
             return <div style = {test}>
-              <div className='player' key={player.id} style={objectStyle}>
+              <div className='player' key={i} style={objectStyle}>
                   <div style = {{"border": "1px solid black", "backgroundColor": "white", "padding": "5px", "marginLeft": "1%", "width":"100%", "height":"100%"}}>
                   {player.player}
                   </div>
