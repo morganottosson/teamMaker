@@ -47,7 +47,7 @@ export default class RFSObjectDiv extends Component {
         teamTwo: [],
         value: ''
     },
-    this.teamOneWon = this.teamOneWon.bind(this);
+    this.teamWon = this.teamWon.bind(this);
     this.delete = this.delete.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.savePlayer = this.savePlayer.bind(this);
@@ -83,10 +83,9 @@ export default class RFSObjectDiv extends Component {
     })
   }
 
-  teamOneWon() {
-    let teamOne = 1
-    console.log(teamOne)
-    return fetch(`/players?input=${teamOne}`)
+  teamWon(team) {
+  console.log(team)
+    return fetch(`/players?input=${team}`)
     .then(response => response.json())
     .then(response => {
       this.state.players = response[0]
@@ -114,36 +113,37 @@ export default class RFSObjectDiv extends Component {
 
   render() {
     return (
-      <div style={backgroundStyle}>
+      <div className="i hold everything" style={backgroundStyle}>
         <div style = {{"color": "white"}}>
         Lag 1
         </div>
-        <div style = {test}>
-          <div className="players" style={arrayStyle}>{this.state.teamOne.map((player, i) => {
+        <div className="div with test style" style = {test}>
+          <div className="players" style={arrayStyle}>{this.state.teamOne.map((player) => {
               return <div style = {test}>
-              <div className='player' key={i} >
-                  <div style = {{"border": "1px solid black", "backgroundColor": "white", "padding": "5px", "width":"95%", "height":"100%"}}>
+              <div className='player'  >
+                  <div key={player.id} style = {{"border": "1px solid black", "backgroundColor": "white", "padding": "5px", "width":"95%", "height":"100%"}}>
                   {player.player} - 
                   {player.rating}
                   </div>
               </div>
               </div>
           })}
-          <button onClick={() => { this.teamOneWon()}}> Vi vann </button>
+          <button onClick={() => { this.teamWon(1)}}> Vi vann </button>
           </div>
         <div style = {{"color": "white"}}>
         Lag 2
         </div>
-          <div className="players" style={arrayStyle}>{this.state.teamTwo.map((player, i) => {
+          <div className="players" style={arrayStyle}>{this.state.teamTwo.map((player) => {
               return <div style = {test}>
-              <div className='player' key={i}>
-                  <div style = {{"border": "1px solid black", "backgroundColor": "white", "padding": "5px", "width":"95%", "height":"100%"}}>
+              <div className='player' >
+                  <div key={player.id} style = {{"border": "1px solid black", "backgroundColor": "white", "padding": "5px", "width":"95%", "height":"100%"}}>
                   {player.player} - 
                   {player.rating}
                   </div>
               </div>
               </div>
           })}
+          <button onClick={() => { this.teamWon(2)}}> Vi vann </button>
           </div>
         </div>
         Spelare
@@ -159,13 +159,13 @@ export default class RFSObjectDiv extends Component {
           onClick={this.savePlayer}>
         Spara spelare
         </button>
-        <div className="players" style={arrayStyle}>{this.state.players.map((player, i) => {
+        <div className="players" style={arrayStyle}>{this.state.players.map((player) => {
             return <div style = {test}>
-              <div className='player' key={i} style={objectStyle}>
-                  <div style = {{"border": "1px solid black", "backgroundColor": "white", "padding": "5px", "marginLeft": "1%", "width":"100%", "height":"100%"}}>
+              <div className='player'  style={objectStyle}>
+                  <div key={player.id} style = {{"border": "1px solid black", "backgroundColor": "white", "padding": "5px", "marginLeft": "1%", "width":"100%", "height":"100%"}}>
                   {player.player}
                   </div>
-                  <div style = {{"border": "1px solid black", "backgroundColor": "white", "padding": "5px", "marginLeft": "1%", "width":"100%", "height":"100%"}}>
+                  <div  style = {{"border": "1px solid black", "backgroundColor": "white", "padding": "5px", "marginLeft": "1%", "width":"100%", "height":"100%"}}>
                   {player.rating}
                   </div>
                   <div>
@@ -176,6 +176,7 @@ export default class RFSObjectDiv extends Component {
         })}
         </div>
       </div>
+      
     )
   }
 }

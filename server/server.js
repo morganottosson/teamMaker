@@ -8,15 +8,15 @@ let DEFAULT_PORT = 8080;
 let port = DEFAULT_PORT;
 
 
-let Morgan = {player: "Morgan", id: 1, rating: 100}
-let LH = {player: "LarsHenric", id: 2, rating: 100}
-let Anders = {player: "Anders", id: 3, rating: 100}
-let Mats = {player: "Mats", id: 4, rating: 100}
+let Morgan = {player: "Morgan", id: 1, rating: 150}
+let LH = {player: "LarsHenric", id: 2, rating: 150}
+let Anders = {player: "Anders", id: 3, rating: 80}
+let Mats = {player: "Mats", id: 4, rating: 80}
 let Joon = {player: "Joon", id: 5, rating: 100}
-let Egon = {player: "Egon", id: 6, rating: 100}
-let Mike = {player: "Mike", id: 7, rating: 100}
-let Robin = {player: "Robin", id: 8, rating: 100}
-let Gustav = {player: "Gustav", id: 9, rating: 100}
+let Egon = {player: "Egon", id: 6, rating: 110}
+let Mike = {player: "Mike", id: 7, rating: 90}
+let Robin = {player: "Robin", id: 8, rating: 120}
+let Gustav = {player: "Gustav", id: 9, rating: 90}
 
 let players = [Morgan, LH, Anders, Mats, Joon, Egon, Mike, Robin, Gustav];
 let teamOne = [];
@@ -33,7 +33,6 @@ app.listen(port,function(){
 function setRatings (team) {
     console.log(team)
     if(team == 1) {
-        console.log("adding to team 1")
         for(var i = 0; i < players.length; i++) {
             for(var k = 0; k < teamOne.length; k++) {
                 if(players[i].player === teamOne[k].player) {
@@ -50,7 +49,6 @@ function setRatings (team) {
             }
         }
     } else if (team == 2) {
-        console.log("adding to team 2")
         for(var i = 0; i < players.length; i++) {
             for(var k = 0; k < teamOne.length; k++) {
                 if(players[i].player === teamOne[k].player) {
@@ -67,7 +65,6 @@ function setRatings (team) {
             }
         }
     }
-    console.log(players)
 
 
 }
@@ -91,7 +88,6 @@ function createEvenTeams (players) {
     }
     
     avgRatingTeamOne = ratingTeamOne/teamOne.length
-    console.log(avgRatingTeamOne)
 
     teamTwo = players
     teamTwo = teamTwo.slice(halfLength, players.length)
@@ -101,9 +97,14 @@ function createEvenTeams (players) {
     }
     
     avgRatingTeamTwo = ratingTeamTwo/teamTwo.length
-    console.log(avgRatingTeamTwo)
 
-
+    let howEven = avgRatingTeamOne/avgRatingTeamTwo
+    console.log(howEven)
+    if(howEven < 0.9 || howEven > 1.1) {
+        console.log("team werent even")
+        createEvenTeams(players);
+    }
+    return players, teamOne, teamTwo, howEven
 }
 
 app.get('/players', (req, res) => {
@@ -112,15 +113,6 @@ app.get('/players', (req, res) => {
         setRatings(team)
     }
     createEvenTeams(players)
-    shuffle(players)
-
-    let halfLength = Math.ceil(players.length / 2);
-
-    teamOne = players
-    teamOne = teamOne.slice(0,halfLength);
-
-    teamTwo = players
-    teamTwo = teamTwo.slice(halfLength, players.length)
 
     let every = [players, teamOne, teamTwo];
 
@@ -131,7 +123,6 @@ app.get('/savePlayer', (req,res) => {
     let value = req.query.input;
     let id = Math.random();
     let newPlayer = {player: value, id: id, rating: 100}
-    console.log(newPlayer)
     players.push(newPlayer)
     res.send(JSON.stringify(newPlayer));
 })
@@ -141,11 +132,9 @@ app.get('/deletePlayer', (req,res) => {
     let player = req.query.input;
 
     let newPlayers = players.filter(function(el) {
-        console.log(el.player)
         return el.player !== player
     })
     players = newPlayers
-    console.log(newPlayers)
     res.send(JSON.stringify(players))
 })
 
