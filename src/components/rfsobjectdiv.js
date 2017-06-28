@@ -112,7 +112,7 @@ export default class RFSObjectDiv extends Component {
 
         <div className="teams">
           <div className="teamOne">
-            <div className="teamOneHeader" style = {{"color": "white"}}>
+            <div className="teamOneHeader" style = {{"color": "white", "fontSize": "30px"}}>
             Lag 1
             </div>
 
@@ -134,7 +134,7 @@ export default class RFSObjectDiv extends Component {
 
         <div className="teamTwo">
 
-          <div className="teamOneHeader" style = {{"color": "white"}}>
+          <div className="teamTwoHeader" style = {{"color": "white", "fontSize": "30px"}}>
           Lag 2
           </div>
 
@@ -155,21 +155,25 @@ export default class RFSObjectDiv extends Component {
           </div>
         </div>
 
-        <div className="playersHeader" style = {{"color": "white"}}>
-        <br/>Spelare 
+        <div className="playersHeader" style = {{"color": "white", "fontSize": "30px"}}>
+          <br/>Spelare 
         </div>
+
         <div>
           <input
+            style= {{"fontSize": "20px"}}
             type="text"
             value={this.state.value} 
             onChange={this.handleChange}
             placeholder="Fyll i namn"
           />
         </div>
-        <button
+
+        <button style = {{"fontSize": "18px", "margin": "5px"}}
           onClick={this.savePlayer}>
-        Spara spelare
+          Spara spelare
         </button>
+
         <div className="players" style={arrayStyle}>{this.state.players.sort((a,b) => a.player > b.player).map((player) => {
             return <div className="who am i" key={player.id} style = {test}>
               <div className='player' style={objectStyle}>
