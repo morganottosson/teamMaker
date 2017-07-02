@@ -3,10 +3,16 @@ import { Button } from 'react-bootstrap';
 import { PageHeader } from 'react-bootstrap';
 import ToggleDisplay from 'react-toggle-display';
 import {Collapse} from 'react-collapse';
+import $ from "jquery";
+import ReactDOM from 'react-dom'
 
 const collapseDiv = {
   "display": "flex"
 }
+
+const bollBild = {
+  url: 'http://www8.idrottonline.se/globalassets/athletic-fc--fotboll/cropped-bg.jpg'
+}  
 
 const test = {
   "display": "flex",
@@ -18,14 +24,11 @@ const backgroundStyle = {
     "width": "100%",
     "height": "100%",
     "zindex":1,
-    
 }
 
 const arrayStyle = {
    "margin": "auto",
    "width": "100%",
-
-
 }
 
 const objectStyle = {  
@@ -33,8 +36,7 @@ const objectStyle = {
     "width": "99%",
     "color": "black",
     "height": "100%",
-    "flexDirection": "row"
-    
+    "flexDirection": "row" 
 }
 
 export default class RFSObjectDiv extends Component {
@@ -45,17 +47,41 @@ export default class RFSObjectDiv extends Component {
         players: [],
         teamOne: [],
         teamTwo: [],
-        value: ''
+        value: '',
     },
     this.teamWon = this.teamWon.bind(this);
     this.delete = this.delete.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.savePlayer = this.savePlayer.bind(this);
+    this.active = this.active.bind(this);
   }
 
   handleChange(event) {
     this.setState({value: event.target.value});
 
+  }
+
+  active(player, i) {
+    this.setState({highlighted: !this.state.highlighted});
+    return fetch (`/activePlayer?input=${player}`)
+    .then(response =>
+      response.json()
+    )
+    .then(response => {
+      console.log(response +  " this is response lenght")
+      if(response !== 1) {
+      this.state.players = response[0]
+      this.state.teamOne = response[1]
+      this.state.teamTwo = response[2]
+      } else {
+        console.log(" here i should make alert ")
+        alert(
+          'Kunde inte skapa jämna lag, lägg till eller tabort spelare för att åtgärda detta fel'
+        )
+      }
+
+      this.forceUpdate();
+    })
   }
 
   delete(player) {
@@ -74,6 +100,7 @@ export default class RFSObjectDiv extends Component {
     .then(response =>
       response.json())
     .then( response => {
+      console.log(response)
       this.fetchPlayers();
     })
   }
@@ -107,6 +134,7 @@ export default class RFSObjectDiv extends Component {
 
   render() {
     return (
+      <div>
       <div className="i hold everything" style={backgroundStyle}>
 
 
@@ -127,7 +155,7 @@ export default class RFSObjectDiv extends Component {
                 </div>
             })}
 
-            <button onClick={() => { this.teamWon(1)}}> Vi vann </button>
+            <button style={{"backgroundColor": "lightBlue", "fontSize": "18px"}} onClick={() => { this.teamWon(1)}}> Vi vann </button>
 
             </div>
           </div>
@@ -149,7 +177,7 @@ export default class RFSObjectDiv extends Component {
                 </div>
             })}
 
-            <button onClick={() => { this.teamWon(2)}}> Vi vann </button>
+            <button style={{"backgroundColor": "lightBlue", "fontSize": "18px"}} onClick={() => { this.teamWon(2)}}> Vi vann </button>
 
             </div>
           </div>
@@ -169,27 +197,31 @@ export default class RFSObjectDiv extends Component {
           />
         </div>
 
-        <button style = {{"fontSize": "18px", "margin": "5px"}}
+        <button style = {{"fontSize": "18px", "margin": "5px", "backgroundColor": "lightBlue"}}
           onClick={this.savePlayer}>
           Spara spelare
         </button>
 
-        <div className="players" style={arrayStyle}>{this.state.players.sort((a,b) => a.player > b.player).map((player) => {
+        <div className="players" style={arrayStyle}>{this.state.players.sort((a,b) => a.player > b.player).map((player, i) => {
             return <div className="who am i" key={player.id} style = {test}>
-              <div className='player' style={objectStyle}>
-                  <div className="playerName" style = {{"border": "1px solid black", "backgroundColor": "white", "padding": "5px", "marginLeft": "1%", "width":"100%", "height":"100%"}}>
+              <div className='player' style={objectStyle} onClick={() => { this.active(player.player, i)}}>
+                  <div className="playerName"  style = {{"border": "1px solid black", "backgroundColor": "white", "padding": "5px", "marginLeft": "1%", "width":"60%", "height":"100%"}}>
                   {player.player}
                   </div>
-                  <div className="playerRating" style = {{"border": "1px solid black", "backgroundColor": "white", "padding": "5px", "marginLeft": "1%", "width":"100%", "height":"100%"}}>
+                  <div className="playerRating" style = {{"border": "1px solid black", "backgroundColor": "white", "padding": "5px", "marginLeft": "1%", "width":"20%", "height":"100%"}}>
                   {player.rating}
                   </div>
+                  <div className="present" style = {{"border": "1px solid black", "backgroundColor": "white", "padding": "5px", "marginLeft": "1%", "width":"20%", "height":"100%"}}>
+                  {player.present}
+                  </div>
                   <div>
-                    <button onClick={() => { this.delete(player.player)}}> X </button>
+                    <button style= {{"fontSize": "10px", "backgroundColor": "lightBlue"}} onClick={() => { this.delete(player.player)}}> X </button>
                   </div>
               </div>
             </div>
         })}
         </div>
+      </div>
       </div>
       
     )
