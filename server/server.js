@@ -8,15 +8,15 @@ let DEFAULT_PORT = 8080;
 let port = DEFAULT_PORT;
 
 
-let Morgan = {player: "Morgan", id: 1, rating: 150, active: false, present: "Borta"}
-let LH = {player: "LarsHenric", id: 2, rating: 150, active: false, present: "Borta"}
-let Anders = {player: "Anders", id: 3, rating: 80, active: false, present: "Borta"}
-let Mats = {player: "Mats", id: 4, rating: 80, active: false, present: "Borta"}
+let Morgan = {player: "Morgan", id: 1, rating: 100, active: false, present: "Borta"}
+let LH = {player: "LarsHenric", id: 2, rating: 100, active: false, present: "Borta"}
+let Anders = {player: "Anders", id: 3, rating: 100, active: false, present: "Borta"}
+let Mats = {player: "Mats", id: 4, rating: 100, active: false, present: "Borta"}
 let Joon = {player: "Joon", id: 5, rating: 100, active: false, present: "Borta"}
-let Egon = {player: "Egon", id: 6, rating: 110, active: false, present: "Borta"}
-let Mike = {player: "Mike", id: 7, rating: 90, active: false, present: "Borta"}
-let Robin = {player: "Robin", id: 8, rating: 120, active: false, present: "Borta"}
-let Gustav = {player: "Gustav", id: 9, rating: 90, active: false, present: "Borta"}
+let Egon = {player: "Egon", id: 6, rating: 100, active: false, present: "Borta"}
+let Mike = {player: "Mike", id: 7, rating: 100, active: false, present: "Borta"}
+let Robin = {player: "Robin", id: 8, rating: 100, active: false, present: "Borta"}
+let Gustav = {player: "Gustav", id: 9, rating: 100, active: false, present: "Borta"}
 
 let players = [Morgan, LH, Anders, Mats, Joon, Egon, Mike, Robin, Gustav];
 let activePlayers = [];
