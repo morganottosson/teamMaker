@@ -1,12 +1,13 @@
-let express = require('express');
-let path = require('path');
-let app = express();
-let bodyParser = require('body-parser');
+//creates variables
+
+let express = require('express')
+let path = require('path')
+let app = express()
+let bodyParser = require('body-parser')
 let shuffle = require('shuffle-array')
 
-let DEFAULT_PORT = 8080;
-let port = DEFAULT_PORT;
-
+let DEFAULT_PORT = 8080
+let port = DEFAULT_PORT
 
 let Morgan = {player: "Morgan", id: 1, rating: 100, active: false, present: "Borta"}
 let LH = {player: "LarsHenric", id: 2, rating: 100, active: false, present: "Borta"}
@@ -18,28 +19,32 @@ let Mike = {player: "Mike", id: 7, rating: 100, active: false, present: "Borta"}
 let Robin = {player: "Robin", id: 8, rating: 100, active: false, present: "Borta"}
 let Gustav = {player: "Gustav", id: 9, rating: 100, active: false, present: "Borta"}
 
-let players = [Morgan, LH, Anders, Mats, Joon, Egon, Mike, Robin, Gustav];
-let activePlayers = [];
-let teamOne = [];
-let teamTwo = [];
-let iterations = 0;
-let error = 0;
-let success = 0;
+let players = [Morgan, LH, Anders, Mats, Joon, Egon, Mike, Robin, Gustav]
+let activePlayers = []
+let teamOne = []
+let teamTwo = []
+let iterations = 0
+let error = 0
+let success = 0
 
-
-
-app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname,"../public")));
+app.use(bodyParser.json())
+app.use(express.static(path.join(__dirname,"../public")))
 app.listen(port,function(){
     console.log("Started listening on port", port)
-});
+})
 
+//gives points to the winners and removes from the loosers
 function setRatings (team) {
+    //den söker inte igenom som den ska
+    console.log(activePlayers.length)
     if(team == 1) {
         for(var i = 0; i < activePlayers.length; i++) {
             for(var k = 0; k < teamOne.length; k++) {
+                console.log(players[i].player)
+                console.log(teamOne[k].player)
                 if(players[i].player === teamOne[k].player) {
-                    players[i].rating += 5;
+                    players[i].rating += 5
+                    console.log(players[i].player + "+5")
                 } 
             }
         }
@@ -47,7 +52,8 @@ function setRatings (team) {
         for(var i = 0; i < activePlayers.length; i++) {
             for(var k = 0; k < teamTwo.length; k++) {
                 if(players[i].player === teamTwo[k].player) {
-                    players[i].rating -= 5;
+                    players[i].rating -= 5
+                    console.log(players[i].player + "-5")
                 } 
             }
         }
@@ -55,7 +61,8 @@ function setRatings (team) {
         for(var i = 0; i < activePlayers.length; i++) {
             for(var k = 0; k < teamOne.length; k++) {
                 if(players[i].player === teamOne[k].player) {
-                    players[i].rating -= 5;
+                    players[i].rating -= 5
+                    console.log(players[i].player + "-5")
                 } 
             }
         }
@@ -63,27 +70,30 @@ function setRatings (team) {
         for(var i = 0; i < activePlayers.length; i++) {
             for(var k = 0; k < teamTwo.length; k++) {
                 if(players[i].player === teamTwo[k].player) {
-                    players[i].rating += 5;
+                    players[i].rating += 5
+                    console.log(players[i].player + "+5")
                 } 
             }
         }
     }
 }
 
+//tries to make even teams and if it can't then it callbaks itself and retries
 function makeTeams (activePlayers, minAcc, mostAcc) {
     if (iterations < 30) {
         shuffle(activePlayers)
 
-        let halfLength = Math.ceil(activePlayers.length / 2);
+        let halfLength = Math.ceil(activePlayers.length / 2)
 
-        let ratingTeamOne = 0;
-        let avgRatingTeamOne = 0;
+        let ratingTeamOne = 0
+        let avgRatingTeamOne = 0
 
-        let ratingTeamTwo = 0;
-        let avgRatingTeamTwo = 0;
+        let ratingTeamTwo = 0
+        let avgRatingTeamTwo = 0
 
+        //creating teamOne
         teamOne = activePlayers
-        teamOne = teamOne.slice(0,halfLength);
+        teamOne = activePlayers.slice(0,halfLength)
 
         for(var i = 0; i < teamOne.length; i++) {
             ratingTeamOne += teamOne[i].rating
@@ -91,6 +101,7 @@ function makeTeams (activePlayers, minAcc, mostAcc) {
         
         avgRatingTeamOne = ratingTeamOne/teamOne.length
 
+        //creating teamTwo
         teamTwo = activePlayers
         teamTwo = teamTwo.slice(halfLength, activePlayers.length)
 
@@ -100,81 +111,79 @@ function makeTeams (activePlayers, minAcc, mostAcc) {
         
         avgRatingTeamTwo = ratingTeamTwo/teamTwo.length
 
+        //compares the teams ratings
         howEven = avgRatingTeamOne/avgRatingTeamTwo
         if(howEven < minAcc || howEven > mostAcc) {
-            console.log("not even teams")
-            iterations += 1;
-            console.log(iterations + " this is iterations")
-            makeTeams(activePlayers,minAcc, mostAcc ); 
+            iterations += 1
+            makeTeams(activePlayers,minAcc, mostAcc )
         }
         if(iterations < 30) {
-            success = 1;
+            success = 1
         }
 
         return teamOne,teamTwo, success
     }
 }
-
+//tries to create even teams
 function createEvenTeams (players) {
-    console.log("create even teams called")
-    success = 0;
+    success = 0
     activePlayers = []
-    error = 0;
-    minAcc = 0;
-    mostAcc = 0;
+    error = 0
+    minAcc = 0
+    mostAcc = 0
+
+    //gathers the active players
     for (var r = 0; r < players.length; r++) {
         if (players[r].active != false) {
             activePlayers.push(players[r])
         }
-        
     }
-    let howEven = 1;
-
+    let howEven = 1
+    //if we have enough players go
     if (activePlayers.length > 3) {
-        minAcc = 0.9;
-        mostAcc = 1.1;
-        makeTeams(activePlayers,minAcc, mostAcc );
+        minAcc = 0.9
+        mostAcc = 1.1
+        makeTeams(activePlayers,minAcc, mostAcc )
     }
+    //if we couldn't make even teams
     if (success !== 1 && activePlayers.length > 3) {
-        iterations = 0;
-        minAcc = 0.8;
-        mostAcc = 1.2;
-        makeTeams(activePlayers,minAcc, mostAcc );
+        iterations = 0
+        minAcc = 0.8
+        mostAcc = 1.2
+        makeTeams(activePlayers,minAcc, mostAcc )
     }
 
-    
     if(activePlayers.length > 3 && success === 0) {
-        error = 1;
+        error = 1
     }
     
-    iterations = 0;
-    console.log(error)
+    iterations = 0
     return players, teamOne, teamTwo, error
 }
-
+//returns players and teams
 app.get('/players', (req, res) => {
-    let team = req.query.input;
+    let team = req.query.input
+    
     if(team !== undefined) {
         setRatings(team)
     }
-    createEvenTeams(players)
+    
+    let every = [players, teamOne, teamTwo]
 
-    let every = [players, teamOne, teamTwo];
-
-    res.send(JSON.stringify(every));
+    res.send(JSON.stringify(every))
 })
-
+//saves a player
 app.get('/savePlayer', (req,res) => {
-    let value = req.query.input;
-    let id = Math.random();
+    let value = req.query.input
+    let id = Math.random()
     let newPlayer = {player: value, id: id, rating: 100, active: false, present: "Borta"}
     players.push(newPlayer)
-    res.send(JSON.stringify(newPlayer));
+    res.send(JSON.stringify(players));
 })
 
-
+//removes a player
 app.get('/deletePlayer', (req,res) => {
-    let player = req.query.input;
+    let player = req.query.input
 
     let newPlayers = players.filter(function(el) {
         return el.player !== player
@@ -182,9 +191,9 @@ app.get('/deletePlayer', (req,res) => {
     players = newPlayers
     res.send(JSON.stringify(players))
 })
-
+//sets a player as active or not
 app.get('/activePlayer', (req,res) => {
-    let activePlayer = req.query.input;
+    let activePlayer = req.query.input
     for (var i = 0; i < players.length; i++) {
         if(players[i].player === activePlayer) {
             if(players[i].active == true) {
@@ -194,19 +203,22 @@ app.get('/activePlayer', (req,res) => {
                 players[i].active = true
                 players[i].present = "På plats"
             }
-            console.log(players[i])
         }
-        
     }
-    createEvenTeams(players);
 
     let every = [players, teamOne, teamTwo];
     if(error == 1) {
-        console.log("i should return error")
         res.send(JSON.stringify(error))  
     } else {
-        res.send(JSON.stringify(every));
+        res.send(JSON.stringify(every))
     }
+})
+
+//creates new teams
+app.get('/makeTeams', (req,res) => {
+    createEvenTeams(players)
+    let every = [teamOne, teamTwo];
+    res.send(JSON.stringify(every))
 })
 
 
