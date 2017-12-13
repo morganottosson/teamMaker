@@ -79,6 +79,7 @@ function makeTeams (activePlayers, minAcc, mostAcc) {
         return teamOne,teamTwo, success
     }
 }
+
 //tries to create even teams
 function createEvenTeams (players) {
     success = 0
@@ -115,51 +116,31 @@ function createEvenTeams (players) {
     iterations = 0
     return players, teamOne, teamTwo, error
 }
+
+//changes ratings of players
+function changeRating(players,team,amount) {
+    for(var i = 0; i < players.length; i++) {
+        for(var k = 0; k < team.length; k++) {
+            if(players[i].player === team[k].player) {
+                players[i].rating += amount
+            } 
+        }
+    }
+    return players
+}
+
 //gives or takes points from the players
 app.get('/teamWon', (req, res) => {
 
     let team = req.query.input
     //gives points to team one and takes from team two
     if(team == 1) {
-        
-        for(var i = 0; i < players.length; i++) {
-            for(var k = 0; k < teamOne.length; k++) {
-                console.log(players[i].player)
-                console.log(teamOne[k].player)
-                if(players[i].player === teamOne[k].player) {
-                    players[i].rating += 5
-                    console.log(players[i].player + "+5")
-                } 
-            }
-        }
-    
-        for(var i = 0; i < players.length; i++) {
-            for(var k = 0; k < teamTwo.length; k++) {
-                if(players[i].player === teamTwo[k].player) {
-                    players[i].rating -= 5
-                    console.log(players[i].player + "-5")
-                } 
-            }
-        }
+        players = changeRating(players, teamOne, +5)
+        players = changeRating(players, teamTwo, -5)
     //gives points to team two and takes from team one    
     } else if (team == 2) {
-        for(var i = 0; i < players.length; i++) {
-            for(var k = 0; k < teamOne.length; k++) {
-                if(players[i].player === teamOne[k].player) {
-                    players[i].rating -= 5
-                    console.log(players[i].player + "-5")
-                } 
-            }
-        }
-    
-        for(var i = 0; i < players.length; i++) {
-            for(var k = 0; k < teamTwo.length; k++) {
-                if(players[i].player === teamTwo[k].player) {
-                    players[i].rating += 5
-                    console.log(players[i].player + "+5")
-                } 
-            }
-        }
+        players = changeRating(players, teamOne, -5)
+        players = changeRating(players, teamTwo, +5)
     }
     let every = [players, teamOne, teamTwo]
     
