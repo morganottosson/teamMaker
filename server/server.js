@@ -115,13 +115,14 @@ function createEvenTeams (players) {
     iterations = 0
     return players, teamOne, teamTwo, error
 }
-
+//gives or takes points from the players
 app.get('/teamWon', (req, res) => {
 
     let team = req.query.input
-
+    //gives points to team one and takes from team two
     if(team == 1) {
-        for(var i = 0; i < activePlayers.length; i++) {
+        
+        for(var i = 0; i < players.length; i++) {
             for(var k = 0; k < teamOne.length; k++) {
                 console.log(players[i].player)
                 console.log(teamOne[k].player)
@@ -132,7 +133,7 @@ app.get('/teamWon', (req, res) => {
             }
         }
     
-        for(var i = 0; i < activePlayers.length; i++) {
+        for(var i = 0; i < players.length; i++) {
             for(var k = 0; k < teamTwo.length; k++) {
                 if(players[i].player === teamTwo[k].player) {
                     players[i].rating -= 5
@@ -140,8 +141,9 @@ app.get('/teamWon', (req, res) => {
                 } 
             }
         }
+    //gives points to team two and takes from team one    
     } else if (team == 2) {
-        for(var i = 0; i < activePlayers.length; i++) {
+        for(var i = 0; i < players.length; i++) {
             for(var k = 0; k < teamOne.length; k++) {
                 if(players[i].player === teamOne[k].player) {
                     players[i].rating -= 5
@@ -150,7 +152,7 @@ app.get('/teamWon', (req, res) => {
             }
         }
     
-        for(var i = 0; i < activePlayers.length; i++) {
+        for(var i = 0; i < players.length; i++) {
             for(var k = 0; k < teamTwo.length; k++) {
                 if(players[i].player === teamTwo[k].player) {
                     players[i].rating += 5
