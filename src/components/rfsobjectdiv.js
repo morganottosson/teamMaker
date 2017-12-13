@@ -88,7 +88,7 @@ export default class RFSObjectDiv extends Component {
 
   //tells the servers that one or the other team won
   teamWon(team) {
-    return fetch(`/players?input=${team}`)
+    return fetch(`/teamWon?input=${team}`)
     .then(response => response.json())
     .then(response => {
       this.setState({

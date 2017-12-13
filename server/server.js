@@ -33,51 +33,6 @@ app.listen(port,function(){
     console.log("Started listening on port", port)
 })
 
-//gives points to the winners and removes from the loosers
-function setRatings (team) {
-    //den söker inte igenom som den ska
-    console.log(activePlayers.length)
-    if(team == 1) {
-        for(var i = 0; i < activePlayers.length; i++) {
-            for(var k = 0; k < teamOne.length; k++) {
-                console.log(players[i].player)
-                console.log(teamOne[k].player)
-                if(players[i].player === teamOne[k].player) {
-                    players[i].rating += 5
-                    console.log(players[i].player + "+5")
-                } 
-            }
-        }
-    
-        for(var i = 0; i < activePlayers.length; i++) {
-            for(var k = 0; k < teamTwo.length; k++) {
-                if(players[i].player === teamTwo[k].player) {
-                    players[i].rating -= 5
-                    console.log(players[i].player + "-5")
-                } 
-            }
-        }
-    } else if (team == 2) {
-        for(var i = 0; i < activePlayers.length; i++) {
-            for(var k = 0; k < teamOne.length; k++) {
-                if(players[i].player === teamOne[k].player) {
-                    players[i].rating -= 5
-                    console.log(players[i].player + "-5")
-                } 
-            }
-        }
-    
-        for(var i = 0; i < activePlayers.length; i++) {
-            for(var k = 0; k < teamTwo.length; k++) {
-                if(players[i].player === teamTwo[k].player) {
-                    players[i].rating += 5
-                    console.log(players[i].player + "+5")
-                } 
-            }
-        }
-    }
-}
-
 //tries to make even teams and if it can't then it callbaks itself and retries
 function makeTeams (activePlayers, minAcc, mostAcc) {
     if (iterations < 30) {
@@ -160,14 +115,58 @@ function createEvenTeams (players) {
     iterations = 0
     return players, teamOne, teamTwo, error
 }
+
+app.get('/teamWon', (req, res) => {
+
+    let team = req.query.input
+
+    if(team == 1) {
+        for(var i = 0; i < activePlayers.length; i++) {
+            for(var k = 0; k < teamOne.length; k++) {
+                console.log(players[i].player)
+                console.log(teamOne[k].player)
+                if(players[i].player === teamOne[k].player) {
+                    players[i].rating += 5
+                    console.log(players[i].player + "+5")
+                } 
+            }
+        }
+    
+        for(var i = 0; i < activePlayers.length; i++) {
+            for(var k = 0; k < teamTwo.length; k++) {
+                if(players[i].player === teamTwo[k].player) {
+                    players[i].rating -= 5
+                    console.log(players[i].player + "-5")
+                } 
+            }
+        }
+    } else if (team == 2) {
+        for(var i = 0; i < activePlayers.length; i++) {
+            for(var k = 0; k < teamOne.length; k++) {
+                if(players[i].player === teamOne[k].player) {
+                    players[i].rating -= 5
+                    console.log(players[i].player + "-5")
+                } 
+            }
+        }
+    
+        for(var i = 0; i < activePlayers.length; i++) {
+            for(var k = 0; k < teamTwo.length; k++) {
+                if(players[i].player === teamTwo[k].player) {
+                    players[i].rating += 5
+                    console.log(players[i].player + "+5")
+                } 
+            }
+        }
+    }
+    let every = [players, teamOne, teamTwo]
+    
+    res.send(JSON.stringify(every))
+})
+
 //returns players and teams
 app.get('/players', (req, res) => {
-    let team = req.query.input
-    
-    if(team !== undefined) {
-        setRatings(team)
-    }
-    
+
     let every = [players, teamOne, teamTwo]
 
     res.send(JSON.stringify(every))
