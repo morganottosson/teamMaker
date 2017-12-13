@@ -280,10 +280,6 @@ const collapseDiv = {
   "display": "flex"
 }
 
-const bollBild = {
-  url: 'http://www8.idrottonline.se/globalassets/athletic-fc--fotboll/cropped-bg.jpg'
-}  
-
 const test = {
   "display": "flex",
   "flexDirection": "column"
