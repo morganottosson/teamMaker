@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import RFSObjectDiv from './rfsobjectdiv'
 
 export default class App extends Component {

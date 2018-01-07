@@ -63,3 +63,4 @@ npm-debug.log
 .secrets
 VCAP_SERVICES.json
 .vscode
+.sass-cache

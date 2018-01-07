@@ -1,17 +1,15 @@
 import React, { Component } from 'react'
 import { Button } from 'react-bootstrap'
-import { PageHeader } from 'react-bootstrap'
-import ToggleDisplay from 'react-toggle-display'
-import {Collapse} from 'react-collapse'
 import $ from "jquery"
-import ReactDOM from 'react-dom'
+import Fireworks from './fireworks'
 
 
 export default class RFSObjectDiv extends Component {
   constructor(props) {
     super(props)
+    
     this.state = {
-        collapse: false,
+        active: false,
         players: [],
         teamOne: [],
         teamTwo: [],
@@ -23,6 +21,7 @@ export default class RFSObjectDiv extends Component {
     this.savePlayer = this.savePlayer.bind(this)
     this.active = this.active.bind(this)
     this.makeTeams = this.makeTeams.bind(this)
+    this.fireworks = this.fireworks.bind(this)
   }
 
   //save the input text as it changes in state
@@ -33,28 +32,31 @@ export default class RFSObjectDiv extends Component {
   //toggles a player to active or not
   active(player, i) {
     this.setState({highlighted: !this.state.highlighted})
-    return fetch (`/activePlayer?input=${player}`)
+
+    let _id = player._id
+    let _rev = player._rev
+    let playerActive = player.player
+    let active = player.active
+    let present = player.present
+    let rating = player.rating
+    
+    return fetch (`/activePlayer?_id=${_id}&_rev=${_rev}&player=${playerActive}&active=${active}&present=${present}&rating=${rating}`)
     .then(response =>
       response.json()
     )
     .then(response => {
-      if(response !== 1) {
         this.setState({
-          players: response[0],
-          teamOne: response[1],
-          teamTwo: response[2]
+          players: response
         })
-      } else {
-          alert(
-            'Kunde inte skapa jämna lag, lägg till eller tabort spelare för att åtgärda detta fel'
-          )
-      }
-    })
+    }) 
   }
 
   //removes a player
   delete(player) {
-    return fetch (`/deletePlayer?input=${player}`)
+    let _id = player._id
+    let _rev = player._rev
+
+    return fetch (`/deletePlayer?_id=${_id}&_rev=${_rev}`)
     .then(response =>
       response.json()
     )
@@ -79,10 +81,14 @@ export default class RFSObjectDiv extends Component {
     return fetch(`/makeTeams`)
     .then(response => response.json())
     .then(response => {
-      this.setState({
-        teamOne: response[0],
-        teamTwo: response[1]
-      })
+      if(response === 1) {
+        window.alert("Det är för få spelare på plats, mins 4 krävs");
+      } else {
+        this.setState({
+          teamOne: response[0],
+          teamTwo: response[1]
+        })
+      }
     })
   }
 
@@ -91,12 +97,23 @@ export default class RFSObjectDiv extends Component {
     return fetch(`/teamWon?input=${team}`)
     .then(response => response.json())
     .then(response => {
+      this.fireworks()
       this.setState({
-        players: response[0],
-        teamOne: response[1],
-        teamTwo: response[2]
+        players: response[0]
       })
     })
+  }
+
+  //creates fireworks
+  fireworks() {
+    this.setState({
+      active: true
+    })  
+    setTimeout(() => {
+      this.setState({
+        active: false
+      }) 
+    }, 5000);
   }
 
   //gets all the players and teams
@@ -105,95 +122,129 @@ export default class RFSObjectDiv extends Component {
     .then(response => response.json())
     .then(response => {
       this.setState({
-        players: response[0],
-        teamOne: response[1],
-        teamTwo: response[2]
+        players: response[0]
+      })
+    })
+  }
+
+  //gets all the players and teams
+  fetchTeams() {
+    fetch(`/teams`)
+    .then(response => response.json())
+    .then(response => {
+      this.setState({
+        teamOne: response[0],
+        teamTwo: response[1]
       })
     })
   }
 
   componentDidMount() {
     this.fetchPlayers()
+    this.fetchTeams()
   }
 
   render() {
     return (
       <div>
-      <div className="mainContainer" style={backgroundStyle}>
+
+      <ul className="cb-slideshow">
+        <li>
+          <span>Image 01</span>
+        </li>
+        <li>
+        <span>Image 02</span>
+        </li>
+        <li>
+        <span>Image 03</span>
+        </li>
+        <li>
+        <span>Image 04</span>
+        </li>
+        <li>
+        <span>Image 05</span>
+        </li>
+        <li>
+        <span>Image 06</span>
+        </li>
+      </ul>
+
+      <div className="mainContainer">
         <div className="teams">
           <div className="teamOne">
-            <div className="teamOneHeader" style = {teamHeader}>Lag 1</div>
-            <div className="players" style={arrayStyle}>{this.state.teamOne.map((player) => {
-                return <div key={player.id} style = {test}>
-                <div className='player'>
-                    <div style = {teamRowStyling}>
-                    {player.player} - 
-                    {player.rating}
+            <div className="teamHeader">Lag 1</div>
+            <div className="players">{this.state.teamOne.map((player, i) => {
+                return <div key={i}>
+                <div className='playerOnTeam'>
+                    <div className="teamRow">
+                    {player.player}
                     </div>
                 </div>
                 </div>
             })}
-            <button style={weWonStyle} onClick={() => { this.teamWon(1)}}> Vi vann </button>
             </div>
+            <button className="whiteButton" onClick={() => { this.teamWon(1)}}> Vi vann </button>
           </div>
 
         <div className="teamTwo">
-          <div className="teamTwoHeader" style = {teamHeader}>
+          <div className="teamHeader">
           Lag 2
           </div>
-            <div className="players" style={arrayStyle}>{this.state.teamTwo.map((player) => {
-                return <div key={player.id} style = {test}>
-                <div className='player' >
-                    <div style = {teamRowStyling}>
-                    {player.player} - 
-                    {player.rating}
+            <div className="players">{this.state.teamTwo.map((player, i) => {
+                return <div key={i}>
+                <div className='playerOnTeam'>
+                    <div className="teamRow">
+                    {player.player}
                     </div>
                 </div>
                 </div>
             })}
-            <button style={weWonStyle} onClick={() => { this.teamWon(2)}}> Vi vann </button>
             </div>
+            <button className="whiteButton" onClick={() => { this.teamWon(2)}}> Vi vann </button>
           </div>
         </div>
 
-        <div className="playersHeader" style = {playersHeaderStyle}>
-          <br/>Spelare 
-        </div>
-        
-        <div>
-          <input
-            style= {input}
-            type="text"
-            value={this.state.value} 
-            onChange={this.handleChange}
-            placeholder="Fyll i namn"
-          />
-        </div>
-
-        <button style = {buttonSaveMake}
-          onClick={this.savePlayer}>
-          Spara spelare
-        </button>
-
-        <button style = {buttonSaveMake}
+        <button className="greenButton"
         onClick={this.makeTeams}>
         Skapa lag
-      </button>
+        </button>
 
-        <div className="players" style={arrayStyle}>{this.state.players.sort((a,b) => a.player > b.player).map((player, i) => {
-            return <div className="playerRow" key={player.id} style = {test}>
-              <div className='player' style={objectStyle} onClick={() => { this.active(player.player, i)}}>
-                  <div className="playerName"  style = {playerNameStyle}>
+        <div className="playersHeader">
+        </div>
+
+        <div className="createPlayer">
+          <div className="group">      
+            <input type="text" required
+            value={this.state.value} 
+            onChange={this.handleChange}/>
+            <span className="highlight"></span>
+            <span className="bar"></span>
+            <label>Spelar namn</label>
+          </div>
+
+          <button 
+          className="greenButton"
+            onClick={this.savePlayer}>
+            Spara spelare
+          </button>
+        </div>
+
+        {this.state.active && <Fireworks />}
+
+        <div className="players">{this.state.players.sort((a,b) => a.player > b.player).map((player, i) => {
+            return <div key={i} >
+              <div className='player'>
+                  <div className="playerName">
                   {player.player}
                   </div>
-                  <div className="playerRating" style = {playerRatingStyle}>
+                  <div className="playerRating">
                   {player.rating}
                   </div>
-                  <div className="present" style = {present}>
+                  <div className="present" onClick={() => { this.active(player, i)}}>
                   {player.present}
                   </div>
                   <div>
-                    <button style= {xbuttonStyle} onClick={() => { this.delete(player.player)}}> X </button>
+                    <button className ="redButton" onClick={() => { this.delete(player)}}> X </button>
                   </div>
               </div>
             </div>
@@ -204,103 +255,4 @@ export default class RFSObjectDiv extends Component {
       
     )
   }
-}
-
-const xbuttonStyle = {
-  "fontSize": "10px", 
-  "backgroundColor": "lightBlue"
-}
-
-const present = {
-  "border": "1px solid black", 
-  "backgroundColor": "white", 
-  "padding": "5px", 
-  "marginLeft": "1%", 
-  "width":"20%", 
-  "height":"100%"
-}
-
-const playerRatingStyle = {
-  "border": "1px solid black", 
-  "backgroundColor": "white", 
-  "padding": "5px", 
-  "marginLeft": "1%", 
-  "width":"20%", 
-  "height":"100%"
-}
-
-const playerNameStyle = {
-  "border": "1px solid black",
-  "backgroundColor": "white", 
-  "padding": "5px", 
-  "marginLeft": "1%", 
-  "width":"60%", 
-  "height":"100%"
-}
-
-const playersHeaderStyle = {
-  "color": "white",
-  "fontSize": "30px",
-  "marginLeft": "5px"
-}
-
-const teamHeader = {
-  "color": "white",
-  "fontSize": "30px",
-  "marginLeft": "5px"
-}
-
-const teamRowStyling = {
-  "border": "1px solid black",
-  "backgroundColor": "white",
-  "padding": "5px",
-  "width":"365px",
-  "height":"100%",
-  "marginLeft": "5px"
-}
-
-const weWonStyle = {
-  "backgroundColor": "lightBlue",
-  "fontSize": "18px",
-  "marginLeft": "5px"
-}
-
-const input = {
-  "fontSize": "20px",
-  "marginLeft": "5px"
-}
-
-const buttonSaveMake = {
-  "fontSize": "18px",
-  "margin": "5px",
-  "backgroundColor": "lightBlue"
-}
-
-const collapseDiv = {
-  "display": "flex"
-}
-
-const test = {
-  "display": "flex",
-  "flexDirection": "column"
-}
-
-const backgroundStyle = {
-    "position": "absolute",
-    "width": "100%",
-    "height": "100%",
-    "zindex":1,
-}
-
-const arrayStyle = {
-   "margin": "auto",
-   "width": "100%",
-}
-
-const objectStyle = {  
-    "display": "flex",
-    "width": "400px",
-    "color": "black",
-    "height": "100%",
-    "flexDirection": "row" 
 }

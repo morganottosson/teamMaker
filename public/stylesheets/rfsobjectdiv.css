@@ -1,0 +1,108 @@
+.teamHeader {
+  color: #FFFAF0;
+  font-size: 30px;
+  margin-left: 5px;
+  text-shadow: 3px 3px black; }
+
+.xbutton {
+  font-size: 10px;
+  background-color: lightBlue; }
+
+.present {
+  border: 1px solid black;
+  background-color: white;
+  padding: 5px;
+  margin-left: 1%;
+  width: 20%;
+  height: 100%; }
+
+.playerRating {
+  border: 1px solid black;
+  background-color: white;
+  padding: 5px;
+  margin-left: 1%;
+  width: 20%;
+  height: 100%; }
+
+.playerName {
+  border: 1px solid black;
+  background-color: white;
+  padding: 5px;
+  marginLeft: 1%;
+  width: 60%;
+  height: 100%; }
+
+.playersHeader {
+  color: #FFFAF0;
+  font-size: 30px;
+  margin-left: 5px;
+  margin-bottom: 30px;
+  text-shadow: 3px 3px black; }
+
+.teamRow {
+  border: 1px solid black;
+  background-color: white;
+  padding: 5px;
+  width: 250px;
+  height: 100%;
+  margin-left: 5px; }
+
+.weWon {
+  background-color: lightBlue;
+  font-size: 18px;
+  margin: 5px; }
+
+.input {
+  font-size: 20px;
+  margin: 5px; }
+
+.buttonSaveMake {
+  font-size: 18px;
+  margin: 5px;
+  background-color: lightBlue; }
+
+.collapseDiv {
+  display: flex; }
+
+.mainContainer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1; }
+
+.players {
+  margin-top: 10px;
+  width: 100%; }
+
+.playersTBDH {
+  margin-bottom: 5px;
+  width: 100%; }
+
+.playersTbHd {
+  margin: auto;
+  width: 100%; }
+
+.player {
+  display: flex;
+  width: 400px;
+  color: black;
+  height: 100%;
+  flex-direction: row;
+  margin-left: 5px; }
+
+.teams {
+  display: flex;
+  flex-direction: row; }
+
+.playerOnTeam {
+  display: flex;
+  width: 250px;
+  color: black;
+  height: 100%;
+  flex-direction: row; }
+
+.createPlayer {
+  display: flex;
+  flex-direction: row; }
+
+/*# sourceMappingURL=rfsobjectdiv.css.map */
